@@ -321,7 +321,7 @@ public class MainActivity extends Activity {
             c.drawCircle(dp(33), dp(3), dp(5), paint);
 
             fill(c, Color.WHITE);
-            c.setTextAlign(Paint.Align.CENTER);
+            paint.setTextAlign(Paint.Align.CENTER);
             paint.setTypeface(Typeface.DEFAULT_BOLD);
             paint.setTextSize(dp(9));
             c.drawText("CH TURBO", 0, dp(54), paint);
