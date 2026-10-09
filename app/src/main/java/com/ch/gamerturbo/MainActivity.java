@@ -164,8 +164,7 @@ public class MainActivity extends Activity {
 
         button("❄️ CONTROL DE TEMPERATURA", () -> {
             refresh();
-            status.setText("Monitor actualizado. Reduce gráficos, brillo y " +
-                evita jugar mientras cargas si el teléfono está caliente.");
+            status.setText("Monitor actualizado. Reduce gráficos, brillo y evita jugar mientras cargas si el teléfono está caliente.");
         });
 
         button("🔐 CONFIGURAR SHIZUKU", () -> {
