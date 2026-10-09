@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Shader;
+import android.graphics.LinearGradient;
+import android.graphics.RectF;
+import android.graphics.Paint;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.BatteryManager;
@@ -47,10 +52,8 @@ public class MainActivity extends Activity {
         brand.setLetterSpacing(.12f);
         root.addView(brand);
 
-        TextView hero = text("🎮", 62, white, true);
-        hero.setGravity(Gravity.CENTER);
-        hero.setPadding(0, dp(10), 0, 0);
-        root.addView(hero);
+        ControllerView controller = new ControllerView(this);
+        root.addView(controller, new LinearLayout.LayoutParams(-1, dp(175)));
 
         TextView title = text("GAMER TURBO", 30, white, true);
         title.setGravity(Gravity.CENTER);
@@ -255,6 +258,75 @@ public class MainActivity extends Activity {
 
     private void message(String s) {
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+    }
+
+
+    private class ControllerView extends View {
+        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        ControllerView(android.content.Context context) {
+            super(context);
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
+        private void fill(Canvas c, int color) {
+            paint.setColor(color);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setShader(null);
+            paint.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
+        }
+
+        @Override
+        protected void onDraw(Canvas c) {
+            super.onDraw(c);
+            float w = getWidth(), h = getHeight();
+            c.save();
+            c.translate(w / 2f, h / 2f);
+
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(dp(1));
+            paint.setColor(Color.rgb(89, 35, 130));
+            c.drawCircle(0, 0, dp(72), paint);
+            paint.setColor(purple);
+            c.drawCircle(0, 0, dp(61), paint);
+
+            paint.setStyle(Paint.Style.FILL);
+            paint.setShader(new LinearGradient(0, -dp(32), 0, dp(38),
+                    new int[]{Color.rgb(105, 40, 160),
+                              Color.rgb(34, 20, 54),
+                              Color.rgb(15, 12, 25)},
+                    null, Shader.TileMode.CLAMP));
+
+            c.drawRoundRect(new RectF(-dp(70), -dp(27), dp(70), dp(35)),
+                    dp(22), dp(22), paint);
+            paint.setShader(null);
+
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(dp(2));
+            paint.setColor(purple);
+            c.drawRoundRect(new RectF(-dp(70), -dp(27), dp(70), dp(35)),
+                    dp(22), dp(22), paint);
+
+            fill(c, Color.rgb(220, 190, 255));
+            c.drawRoundRect(new RectF(-dp(51), -dp(8), -dp(43), dp(17)),
+                    dp(3), dp(3), paint);
+            c.drawRoundRect(new RectF(-dp(60), 0, -dp(34), dp(8)),
+                    dp(3), dp(3), paint);
+
+            fill(c, Color.rgb(255, 70, 200));
+            c.drawCircle(dp(43), -dp(10), dp(5), paint);
+            fill(c, Color.rgb(120, 90, 255));
+            c.drawCircle(dp(54), dp(3), dp(5), paint);
+            fill(c, Color.rgb(170, 255, 245));
+            c.drawCircle(dp(33), dp(3), dp(5), paint);
+
+            fill(c, Color.WHITE);
+            c.setTextAlign(Paint.Align.CENTER);
+            paint.setTypeface(Typeface.DEFAULT_BOLD);
+            paint.setTextSize(dp(9));
+            c.drawText("CH TURBO", 0, dp(54), paint);
+            c.restore();
+        }
     }
 
     @Override
