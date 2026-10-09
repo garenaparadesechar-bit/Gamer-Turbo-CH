@@ -1,16 +1,16 @@
 plugins {
     id 'com.android.application'
 }
-
+ 
 android {
-    namespace 'com.gamerturbo.ch'
+    namespace 'com.ch.gamerturbo'
     compileSdk 35
 
     defaultConfig {
-        applicationId 'com.gamerturbo.ch'
+        applicationId 'com.ch.gamerturbo'
         minSdk 23
         targetSdk 28
         versionCode 1
-        versionName '1.4'
+        versionName '1.0'
     }
 }
