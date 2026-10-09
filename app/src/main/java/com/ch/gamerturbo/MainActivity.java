@@ -92,10 +92,7 @@ public class MainActivity extends Activity {
         space(8);
 
         addButton("⚡  ACTUALIZAR MONITOR", v -> refreshMonitor());
-        addButton("🚀  MODO DE RENDIMIENTO", v -> {
-            refreshMonitor();
-            message("Monitor actualizado. El rendimiento también depende del sistema y la temperatura.");
-        });
+        addButton("🚀  MODO DE RENDIMIENTO", v -> analizarRendimiento());
 
         TextView games = text("CENTRO DE JUEGOS", 17, white, true);
         games.setPadding(dp(2), dp(22), 0, dp(8));
@@ -198,6 +195,55 @@ public class MainActivity extends Activity {
         return t;
     }
 
+
+    private void analizarRendimiento() {
+        refreshMonitor();
+
+        ActivityManager am =
+                (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        if (am == null) {
+            message("No se pudo consultar la memoria.");
+            return;
+        }
+
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(mi);
+
+        Intent i = registerReceiver(null,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int t = i == null ? -1 :
+                i.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
+
+        StringBuilder r = new StringBuilder();
+        r.append("ANÁLISIS DE RENDIMIENTO\n\n");
+        r.append("RAM disponible: ").append(formatSize(mi.availMem)).append("\n");
+
+        if (mi.lowMemory) {
+            r.append("Consejo: cierra aplicaciones que no estés usando.\n");
+        } else {
+            r.append("La memoria no indica una situación crítica.\n");
+        }
+
+        if (t >= 0) {
+            float c = t / 10f;
+            r.append("Temperatura de batería: ")
+                    .append(String.format(Locale.US, "%.1f °C", c)).append("\n");
+
+            if (c >= 42f) {
+                r.append("Aviso: deja enfriar el teléfono y evita jugar mientras carga.\n");
+            } else if (c >= 38f) {
+                r.append("Consejo: vigila el calentamiento durante la partida.\n");
+            } else {
+                r.append("Sin aviso de temperatura por este criterio.\n");
+            }
+        } else {
+            r.append("Temperatura de batería no disponible.\n");
+        }
+
+        r.append("\nEste análisis no modifica el procesador ni garantiza más FPS.");
+        message(r.toString());
+    }
+
     private void refreshMonitor() {
         Intent i = registerReceiver(null,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -207,7 +253,7 @@ public class MainActivity extends Activity {
             int t = i.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
             battery.setText("🔋 BATERÍA  •  " +
                     (level >= 0 ? (level * 100 / Math.max(1, scale)) + "%" : "N/D"));
-            temp.setText("🌡️ TEMPERATURA  •  " +
+            temp.setText("🌡️ TEMP. BATERÍA  •  " +
                     (t >= 0 ? String.format(Locale.US, "%.1f °C", t / 10f) : "N/D"));
         }
         ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
